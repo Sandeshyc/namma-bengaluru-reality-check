@@ -1,3 +1,6 @@
+<video autoplay loop muted playsinline width="100%">
+  <source src="https://github.com/user-attachments/assets/22346cc4-6226-4170-a1c9-b0028c04f4b1" type="video/webm">
+</video>
 # Namma Bengaluru Rental Reality-Check
 
 **An end-to-end Gen AI + geospatial pipeline** that turns messy Bengaluru rental listings (Telegram blurbs, broker copy-paste, informal text) into a structured record and a **100-point Livability Scorecard**—commute realism, water risk, deposit fairness, and civic context—using **LLM structured extraction**, **vector similarity deduplication**, **PostGIS**, and **real routing APIs**.
