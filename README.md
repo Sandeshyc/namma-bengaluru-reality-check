@@ -290,7 +290,7 @@ Default dev URLs: frontend `http://localhost:3000`, API `http://localhost:8000`.
 
 ### 5. Processed data
 
-Commute node expects `backend/data/processed/tech_parks.json`. If missing, commutes degrade gracefully (empty map → scoring red flag). Seed tech parks in DB from `database/seed_tech_parks.sql` and keep JSON in sync with your deployment story.
+Commute node expects **`data/processed/tech_parks.json`** at the repo root (same coordinates as `database/seed_tech_parks.sql`). If that file is missing, the commute step returns an empty map and scoring adds *“Commute data unavailable; score defaulted to 0.”* Keep the JSON in sync when you change park destinations. Optional: set `OLA_MAPS_API_KEY` for routed times; without it, drive times use a Haversine + average-speed heuristic.
 
 ---
 
@@ -344,8 +344,9 @@ Requires `TELEGRAM_API_ID`, `TELEGRAM_API_HASH`, `TELEGRAM_PHONE` in `.env`. Run
 │   │   │   └── nodes/           # extract, geocode, duplicate, commute, civic_water, scoring, persist
 │   │   ├── models/schemas.py    # Pydantic: AgentState, RentalListingSchema, LivabilityScorecard
 │   │   └── services/            # geocoding, routing, spatial, cache, supabase, water_data, llm_throttle
-│   ├── ingestion/               # Telegram listener
-│   └── data/processed/          # tech_parks.json (commute destinations)
+│   └── ingestion/               # Telegram listener
+├── data/
+│   └── processed/               # tech_parks.json (commute destinations; tracked in git)
 ├── database/
 │   ├── schema.sql
 │   ├── migrations/

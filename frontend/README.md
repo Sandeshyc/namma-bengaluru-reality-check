@@ -18,7 +18,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Styling (Tailwind CSS v4)
+
+- **PostCSS:** `postcss.config.mjs` runs `@tailwindcss/postcss`.
+- **Entry:** `src/app/globals.css` imports Tailwind (`@import "tailwindcss";`), then keeps the product design system in `@layer base` (tokens, resets, typography, `main`) and `@layer components` (panels, nav, auth, scorecard, etc.). Use Tailwind utilities in JSX alongside these classes (for example `className="panel flex gap-4"`).
+- **Tokens:** Colours and spacing stay on `:root` CSS variables (`--space-*`, `--cauvery`, …) so existing screens stay visually identical.
 
 ## Learn More
 

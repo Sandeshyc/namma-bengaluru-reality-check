@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
 import { AppProviders } from "../components/AppProviders";
-import Navigation from "../components/Navigation";
+import NavigationDynamic from "../components/NavigationDynamic";
 
 export const metadata: Metadata = {
   title: "Namma Bengaluru Reality-Check",
@@ -19,15 +19,17 @@ export default function RootLayout({
       <body>
         <AppProviders>
           <div className="container app-shell">
-            <header className="header animate-slide-up">
-              <Link href="/" className="brand" aria-label="Namma Bengaluru Reality Check home">
-                <img src="/logo.png" className="brand-mark" alt="Reality Check Logo" />
-                <div>
-                  <div className="brand-kicker">Rental Intelligence</div>
-                  <h2 className="brand-title">Reality<span className="text-gradient">Check</span></h2>
-                </div>
-              </Link>
-              <Navigation />
+            <header className="header animate-header-in">
+              <div className="header-inner">
+                <Link href="/" className="brand" aria-label="Namma Bengaluru Reality Check home">
+                  <img src="/logo.png" className="brand-mark" alt="Reality Check Logo" />
+                  <div>
+                    <div className="brand-kicker">Rental Intelligence</div>
+                    <h2 className="brand-title">Reality<span className="text-gradient">Check</span></h2>
+                  </div>
+                </Link>
+                <NavigationDynamic />
+              </div>
             </header>
             <main>
               {children}
@@ -35,7 +37,7 @@ export default function RootLayout({
             <footer className="app-footer">
               <div className="footer-grid">
                 <p>Built for Bengaluru renters who want evidence before deposits.</p>
-                <p>
+                <p className="hidden md:block">
                   Geocoding by Google Maps / LocationIQ. Routing by Ola Maps. Civic joins by PostGIS.
                 </p>
               </div>

@@ -28,7 +28,8 @@ build/
 
 # Data
 data/raw/
-data/processed/
+data/processed/*
+!data/processed/tech_parks.json
 *.log
 
 # Local Assets (Not for deployment)

@@ -1,5 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap");
+@import "tailwindcss";
 
+@layer base {
 :root {
   color-scheme: light;
 
@@ -160,6 +162,15 @@ textarea:focus-visible {
   outline-offset: 3px;
 }
 
+main {
+  min-height: 60dvh;
+  padding-bottom: var(--app-footer-scroll-gutter);
+}
+
+}
+
+@layer components {
+
 code,
 .data-value {
   font-family: var(--font-mono);
@@ -167,8 +178,9 @@ code,
 }
 
 .container {
-  inline-size: min(1240px, calc(100% - 40px));
+  box-sizing: border-box;
   margin-inline: auto;
+  inline-size: min(1240px, calc(100% - 40px));
 }
 
 .app-shell {
@@ -180,10 +192,7 @@ code,
   position: sticky;
   top: 14px;
   z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
+  display: block;
   margin-bottom: var(--space-10);
   padding: 12px 14px;
   border: 1px solid color-mix(in oklch, var(--border-strong) 75%, var(--cauvery-strong) 25%);
@@ -197,11 +206,21 @@ code,
     0 14px 42px oklch(0 0 0 / 0.09);
 }
 
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+  min-width: 0;
+}
+
 .brand {
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
   min-height: 44px;
+  min-width: 0;
 }
 
 .brand-mark {
@@ -239,7 +258,33 @@ code,
 .nav-links {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
+}
+
+.nav-shell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  gap: var(--space-3);
+}
+
+.nav-menu-btn,
+.nav-drawer-backdrop,
+.nav-drawer-close {
+  display: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .nav-links a.nav-link,
@@ -323,12 +368,6 @@ code,
   border-color: oklch(0.30 0.11 145) !important;
   color: oklch(1 0 0) !important;
   filter: brightness(1.04);
-}
-
-main {
-  min-height: 60dvh;
-  /* Reserve space so content doesn’t sit under the fixed footer when wrapped / tall */
-  padding-bottom: var(--app-footer-scroll-gutter);
 }
 
 .app-footer {
@@ -1184,6 +1223,21 @@ main {
   animation: fadeInUp 520ms var(--ease-decelerate) both;
 }
 
+/* Header must not use transform/filter/backdrop stacking tricks: mobile nav is
+   position:fixed inside the header and would otherwise be clipped to the header box. */
+@keyframes headerFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-header-in {
+  animation: headerFadeIn 520ms var(--ease-decelerate) both;
+}
+
 /* Login / auth: no `filter` on ancestor — blur on parent breaks focus & typing in WebKit/Chromium */
 @keyframes authEntrance {
   from {
@@ -1214,31 +1268,262 @@ main {
 }
 
 @media (max-width: 900px) {
-  .container {
-    inline-size: min(100% - 28px, 1240px);
+  :root {
+    /* Shorter phones: old gutter used 26dvh and felt like a huge dead zone */
+    --app-footer-scroll-gutter: calc(
+      env(safe-area-inset-bottom, 0px) + clamp(6.5rem, 17dvh, 10rem)
+    );
   }
 
+  .container {
+    inline-size: min(1240px, 100%);
+    padding-inline: max(
+        clamp(var(--space-4), 5vw, var(--space-6)),
+        env(safe-area-inset-left, 0px)
+      )
+      max(
+        clamp(var(--space-4), 5vw, var(--space-6)),
+        env(safe-area-inset-right, 0px)
+      );
+  }
+
+  footer.app-footer,
   .app-footer {
-    padding-inline: 14px;
+    padding-block: var(--space-4);
+    padding-inline: max(14px, env(safe-area-inset-left, 0px))
+      max(14px, env(safe-area-inset-right, 0px));
+    background: var(--ink-panel);
+    border-top: 1px solid var(--border);
+  }
+
+  .app-footer .footer-grid p {
+    text-shadow: none;
+  }
+
+  .footer-grid {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: var(--space-3);
+  }
+
+  .footer-grid p {
+    max-inline-size: 36rem;
+    margin-inline: 0;
   }
 
   .header {
     position: static;
-    align-items: flex-start;
-    flex-direction: column;
+    margin-bottom: var(--space-6);
+    padding: 10px 12px;
     border-radius: var(--radius-lg);
+    /* backdrop-filter creates a containing block for fixed descendants (drawer/backdrop) */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: color-mix(in oklch, var(--ink-panel) 92%, var(--cauvery) 8%);
   }
 
-  .nav-links {
-    width: 100%;
-    justify-content: space-between;
+  .header-inner {
+    gap: var(--space-3);
   }
 
-  .nav-links a.nav-link,
-  .nav-links a.nav-cta {
-    flex: 1;
+  .brand {
+    gap: var(--space-2);
+    min-height: 40px;
+  }
+
+  .brand-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .brand-title {
+    font-size: 1.05rem;
+  }
+
+  .brand-kicker {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* Mobile: hamburger + slide-out drawer (portaled to body — see Navigation.tsx) */
+  .nav-mobile-portal {
+    position: fixed;
+    inset: 0;
+    z-index: 150;
+    pointer-events: none;
+  }
+
+  .nav-mobile-portal.is-open {
+    pointer-events: auto;
+  }
+
+  .nav-shell {
+    position: relative;
+    z-index: 1;
+  }
+
+  .nav-shell.is-open {
+    /* Above .nav-mobile-portal so the toggle stays usable while the menu is open */
+    z-index: 160;
+  }
+
+  .nav-menu-btn {
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
-    padding-inline: var(--space-2);
+    position: relative;
+    z-index: 161;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    margin-left: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: color-mix(in oklch, var(--ink-panel-raised) 90%, var(--cauvery) 10%);
+    box-shadow: 0 1px 2px oklch(0 0 0 / 0.04);
+    transition:
+      background 150ms var(--ease-standard),
+      border-color 150ms var(--ease-standard);
+  }
+
+  .nav-menu-btn:hover {
+    border-color: var(--border-strong);
+    background: var(--ink-panel-raised);
+  }
+
+  .nav-shell.is-open .nav-menu-btn {
+    border-color: color-mix(in oklch, var(--cauvery-strong) 35%, transparent);
+  }
+
+  .nav-menu-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 20px;
+    height: 14px;
+  }
+
+  .nav-menu-icon span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    border-radius: 1px;
+    background: var(--cauvery-strong);
+    transition:
+      transform 200ms var(--ease-standard),
+      opacity 200ms var(--ease-standard);
+  }
+
+  .nav-shell.is-open .nav-menu-icon span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .nav-shell.is-open .nav-menu-icon span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-shell.is-open .nav-menu-icon span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .nav-mobile-portal .nav-drawer-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: oklch(0.22 0.03 145 / 0.42);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 200ms var(--ease-standard),
+      visibility 200ms var(--ease-standard);
+  }
+
+  .nav-mobile-portal.is-open .nav-drawer-backdrop {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .nav-mobile-portal .nav-drawer-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-end;
+    width: 40px;
+    height: 40px;
+    margin-bottom: var(--space-2);
+    margin-right: calc(-1 * var(--space-1));
+    margin-top: calc(-1 * var(--space-1));
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    font-weight: 400;
+    cursor: pointer;
+    transition:
+      color 150ms var(--ease-standard),
+      background 150ms var(--ease-standard);
+  }
+
+  .nav-mobile-portal .nav-drawer-close:hover {
+    color: var(--text-main);
+    background: var(--border-subtle);
+  }
+
+  .nav-mobile-portal .nav-links {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    width: min(300px, 88vw);
+    max-width: 100%;
+    margin: 0;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: var(--space-2);
+    padding: max(var(--space-5), env(safe-area-inset-top, 0px)) var(--space-4)
+      max(var(--space-6), env(safe-area-inset-bottom, 0px));
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-left: 1px solid var(--border-strong);
+    background: color-mix(in oklch, var(--ink-panel) 94%, var(--cauvery) 6%);
+    box-shadow: -12px 0 40px oklch(0 0 0 / 0.12);
+    transform: translateX(100%);
+    transition: transform 220ms var(--ease-standard);
+  }
+
+  .nav-mobile-portal.is-open .nav-links {
+    transform: translateX(0);
+  }
+
+  .nav-mobile-portal .nav-links a.nav-link,
+  .nav-mobile-portal .nav-links a.nav-cta {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    width: 100%;
+    padding-block: var(--space-3);
+    white-space: normal;
+  }
+
+  .nav-mobile-portal .nav-links .btn-primary,
+  .nav-mobile-portal .nav-links .btn-secondary,
+  .nav-mobile-portal .nav-links button.btn-secondary {
+    width: 100%;
+    justify-content: center;
+    white-space: nowrap;
   }
 
   .hero-grid,
@@ -1298,6 +1583,22 @@ main {
   }
 }
 
+@media (max-width: 480px) {
+  :root {
+    --app-footer-scroll-gutter: calc(
+      env(safe-area-inset-bottom, 0px) + clamp(6.25rem, 14dvh, 9rem)
+    );
+  }
+
+  .brand-kicker {
+    display: none;
+  }
+
+  .app-footer {
+    font-size: 0.8rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1307,4 +1608,6 @@ main {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
+}
+
 }
