@@ -1,0 +1,36 @@
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+*.session
+
+# Node
+node_modules/
+.next/
+out/
+build/
+
+# IDEs and OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Data
+data/raw/
+data/processed/
+*.log
+
+# Local Assets (Not for deployment)
+local_assets/
+docs/
