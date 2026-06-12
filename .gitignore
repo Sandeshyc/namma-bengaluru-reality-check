@@ -27,7 +27,8 @@ build/
 .DS_Store
 
 # Data
-data/raw/
+data/raw/*
+!data/raw/groundwater_risk.csv
 data/processed/*
 !data/processed/tech_parks.json
 *.log
